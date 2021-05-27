@@ -3,6 +3,8 @@ import { Doughnut } from 'react-chartjs-2';
 import Slider from "react-slick";
 import { TodoListComponent } from '../apps/TodoList'
 import { VectorMap } from "react-jvectormap"
+import * as netatmoAuth from "../../services/netatmo-authorization-services";
+import * as dashboardService from "../../services/dashboard-services";
 
 const mapData = {
   "BZ": 75.00,
@@ -14,6 +16,12 @@ const mapData = {
 }
 
 export class Dashboard extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      weatherData: null
+    }
+  }
 
   transactionHistoryData =  {
     labels: ["Paypal", "Stripe","Cash"],
@@ -53,6 +61,74 @@ export class Dashboard extends Component {
   toggleProBanner() {
     document.querySelector('.proBanner').classList.toggle("hide");
   }
+
+  async componentDidMount(){
+    if(!localStorage.getItem("authToken")){
+      const authToken = await netatmoAuth.getAuthToken()
+      localStorage.setItem("authToken", authToken);
+    }
+  
+    const weatherData = await dashboardService.getCurrentWeather(localStorage.getItem("authToken"));
+    this.setState({
+      weatherData: weatherData
+    });
+    console.log(weatherData);
+  }
+
+  getTemperatureTrend = (trend) => {
+    console.log("trend", trend)
+    switch(trend){
+      case "down":
+        return(
+          <div className="icon icon-box-danger">
+            <span className="mdi mdi-arrow-bottom-right icon-item"></span>
+          </div>
+        )
+      
+      case "up":
+        return(
+          <div className="icon icon-box-success ">
+            <span className="mdi mdi-arrow-top-right icon-item"></span>
+          </div>
+        )
+
+      default:
+        return(
+          <div className="icon icon-box-success ">
+            <span className="mdi mdi-arrow-right icon-item"></span>
+          </div>
+        )
+    }
+  }
+
+    getCo2Status = (ppm) => {
+      if(ppm === "N/A"){
+        return <div></div>
+      }
+      else if(ppm < 425){
+        return(
+          <div className="icon icon-box-success ">
+            <span className="mdi mdi-check"></span>
+          </div>
+        ) 
+      }
+      else if(1180 > ppm > 425){
+        return(
+        <div className="icon icon-box-danger ">
+            <span className="mdi mdi-alert-circle-outline"></span>
+          </div>
+        )
+      }
+      else if(ppm > 1180){
+        return (
+        <div className="icon icon-box-danger ">
+            <span className="mdi mdi-alert-outline"></span>
+          </div>
+        )
+      }
+    }
+  
+
   render () {
     return (
       <div>
@@ -63,17 +139,15 @@ export class Dashboard extends Component {
                 <div className="row">
                   <div className="col-9">
                     <div className="d-flex align-items-center align-self-start">
-                      <h3 className="mb-0">$12.34</h3>
-                      <p className="text-success ml-2 mb-0 font-weight-medium">+3.5%</p>
+                      <h3 className="mb-0">{this.state.weatherData === null ? "N/A" : this.state.weatherData.body.devices[0].dashboard_data.Temperature + "°C"}</h3>
+                      <p className="text-primary ml-2 mb-0 font-weight-medium">{this.state.weatherData === null ? "N/A" : this.state.weatherData.body.devices[0].dashboard_data.Humidity+"%"}</p>
                     </div>
                   </div>
                   <div className="col-3">
-                    <div className="icon icon-box-success ">
-                      <span className="mdi mdi-arrow-top-right icon-item"></span>
-                    </div>
+                    {this.getTemperatureTrend(this.state.weatherData === null ? "N/A" : this.state.weatherData.body.devices[0].dashboard_data.temp_trend)}
                   </div>
                 </div>
-                <h6 className="text-muted font-weight-normal">Potential growth</h6>
+                <h6 className="text-muted font-weight-normal">Temperatur Haus</h6>
               </div>
             </div>
           </div>
@@ -83,17 +157,15 @@ export class Dashboard extends Component {
                 <div className="row">
                   <div className="col-9">
                     <div className="d-flex align-items-center align-self-start">
-                      <h3 className="mb-0">$17.34</h3>
-                      <p className="text-success ml-2 mb-0 font-weight-medium">+11%</p>
+                      <h3 className="mb-0">{this.state.weatherData === null ? "N/A" : this.state.weatherData.body.devices[0].modules[0].dashboard_data.Temperature+ "°C"}</h3>
+                      <p className="text-primary ml-2 mb-0 font-weight-medium">{this.state.weatherData === null ? "N/A" : this.state.weatherData.body.devices[0].modules[0].dashboard_data.Humidity+"%"}</p>
                     </div>
                   </div>
                   <div className="col-3">
-                    <div className="icon icon-box-success">
-                      <span className="mdi mdi-arrow-top-right icon-item"></span>
-                    </div>
+                    {this.getTemperatureTrend(this.state.weatherData === null ? "N/A" : this.state.weatherData.body.devices[0].modules[0].dashboard_data.temp_trend)}
                   </div>
                 </div>
-                <h6 className="text-muted font-weight-normal">Revenue current</h6>
+                <h6 className="text-muted font-weight-normal">Temperatur Draußen</h6>
               </div>
             </div>
           </div>
@@ -103,17 +175,15 @@ export class Dashboard extends Component {
                 <div className="row">
                   <div className="col-9">
                     <div className="d-flex align-items-center align-self-start">
-                      <h3 className="mb-0">$12.34</h3>
+                      <h3 className="mb-0">{this.state.weatherData === null ? "N/A" : this.state.weatherData.body.devices[0].dashboard_data.CO2 + " ppm"}</h3>
                       <p className="text-danger ml-2 mb-0 font-weight-medium">-2.4%</p>
                     </div>
                   </div>
                   <div className="col-3">
-                    <div className="icon icon-box-danger">
-                      <span className="mdi mdi-arrow-bottom-left icon-item"></span>
-                    </div>
+                    {this.getCo2Status(this.state.weatherData === null ? "N/A" : this.state.weatherData.body.devices[0].dashboard_data.CO2)}
                   </div>
                 </div>
-                <h6 className="text-muted font-weight-normal">Daily Income</h6>
+                <h6 className="text-muted font-weight-normal">CO2 Haus</h6>
               </div>
             </div>
           </div>
@@ -175,10 +245,11 @@ export class Dashboard extends Component {
             <div className="card">
               <div className="card-body">
                 <div className="d-flex flex-row justify-content-between">
-                  <h4 className="card-title mb-1">Open Projects</h4>
+                  <h4 className="card-title mb-1">Videokamera Innen</h4>
                   <p className="text-muted mb-1">Your data status</p>
                 </div>
-                <div className="row">
+                <video src="https://prodvpn-eu-8.netatmo.net/restricted/10.255.58.115/7e94daeafda38f567521144fc76dce21/MTYyMjE2MDAwMDo6SErxUNMpVNx2cAUwxF3DRBaYoA,,/live/index.m3u8" controls autoPlay muted style={{width: "100%"}}></video>
+                {/* <div className="row">
                   <div className="col-12">
                     <div className="preview-list">
                       <div className="preview-item border-bottom">
@@ -268,7 +339,7 @@ export class Dashboard extends Component {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

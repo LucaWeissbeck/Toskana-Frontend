@@ -19,7 +19,8 @@ export class Dashboard extends Component {
   constructor(props){
     super(props);
     this.state = {
-      weatherData: null
+      weatherData: null,
+      cameraData: null
     }
   }
 
@@ -67,13 +68,20 @@ export class Dashboard extends Component {
       const authToken = await netatmoAuth.getAuthToken()
       localStorage.setItem("authToken", authToken);
     }
-  
+    // Get Weather Data
     const weatherData = await dashboardService.getCurrentWeather(localStorage.getItem("authToken"));
     this.setState({
       weatherData: weatherData
     });
-    console.log(weatherData);
+
+    // Get Camera Data
+    const cameraData = await dashboardService.getVideoData(localStorage.getItem("authToken"));
+    this.setState({
+      cameraData: cameraData
+    })
   }
+
+  // METHODS
 
   getTemperatureTrend = (trend) => {
     console.log("trend", trend)
@@ -127,11 +135,34 @@ export class Dashboard extends Component {
         )
       }
     }
+
+    getCameraStreamURL = () => {
+      let URL = "";
+      //this.state.cameraData === null ? URL = URL : URL =  this.state.cameraData.body.homes[0].cameras[0].vpn_url
+      const videoURL = URL + "/live/index.m3u8" // if localhost change to: /live/index_local/index.m3u8
+      console.log(videoURL);
+      return videoURL
+    }
+
+    getCameraStatus = () => {
+      try{
+        if(this.state.cameraData.body.homes[0].cameras[0].vpn_url){
+          return <p className="text-success mb-1">ONLINE</p>
+        }
+        else{
+          return <p className="text-danger mb-1">OFFLINE</p>
+        }
+      }
+      catch{
+        return <p className="text-danger mb-1">OFFLINE</p>
+      }
+    }
   
 
   render () {
     return (
       <div>
+        {console.log(this.state.cameraData)}
         <div className="row">
           <div className="col-xl-3 col-sm-6 grid-margin stretch-card">
             <div className="card">
@@ -176,14 +207,13 @@ export class Dashboard extends Component {
                   <div className="col-9">
                     <div className="d-flex align-items-center align-self-start">
                       <h3 className="mb-0">{this.state.weatherData === null ? "N/A" : this.state.weatherData.body.devices[0].dashboard_data.CO2 + " ppm"}</h3>
-                      <p className="text-danger ml-2 mb-0 font-weight-medium">-2.4%</p>
                     </div>
                   </div>
                   <div className="col-3">
                     {this.getCo2Status(this.state.weatherData === null ? "N/A" : this.state.weatherData.body.devices[0].dashboard_data.CO2)}
                   </div>
                 </div>
-                <h6 className="text-muted font-weight-normal">CO2 Haus</h6>
+                <h6 className="text-muted font-weight-normal">CO2 Innen</h6>
               </div>
             </div>
           </div>
@@ -193,7 +223,7 @@ export class Dashboard extends Component {
                 <div className="row">
                   <div className="col-9">
                     <div className="d-flex align-items-center align-self-start">
-                      <h3 className="mb-0">$31.53</h3>
+                      <h3 className="mb-0">7 PH</h3>
                       <p className="text-success ml-2 mb-0 font-weight-medium">+3.5%</p>
                     </div>
                   </div>
@@ -203,7 +233,7 @@ export class Dashboard extends Component {
                     </div>
                   </div>
                 </div>
-                <h6 className="text-muted font-weight-normal">Expense current</h6>
+                <h6 className="text-muted font-weight-normal">Pool</h6>
               </div>
             </div>
           </div>
@@ -246,9 +276,9 @@ export class Dashboard extends Component {
               <div className="card-body">
                 <div className="d-flex flex-row justify-content-between">
                   <h4 className="card-title mb-1">Videokamera Innen</h4>
-                  <p className="text-muted mb-1">Your data status</p>
+                  {this.getCameraStatus()}
                 </div>
-                <video src="https://prodvpn-eu-8.netatmo.net/restricted/10.255.58.115/7e94daeafda38f567521144fc76dce21/MTYyMjE2MDAwMDo6SErxUNMpVNx2cAUwxF3DRBaYoA,,/live/index.m3u8" controls autoPlay muted style={{width: "100%"}}></video>
+                <video src={this.getCameraStreamURL()} controls autoPlay muted style={{width: "100%"}}></video>
                 {/* <div className="row">
                   <div className="col-12">
                     <div className="preview-list">

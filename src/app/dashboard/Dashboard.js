@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import Slider from "react-slick";
-import { TodoListComponent } from '../apps/TodoList'
+import { TodoListComponent } from '../apps/TodoList';
+import  ReactHlsPlayer  from "react-hls-player";
 import { VectorMap } from "react-jvectormap"
 import * as netatmoAuth from "../../services/netatmo-authorization-services";
 import * as dashboardService from "../../services/dashboard-services";
@@ -156,7 +157,7 @@ export class Dashboard extends Component {
     getCameraStatus = () => {
       try{
         if(this.state.cameraData.body.homes[0].cameras[0].vpn_url){
-          return <p className="text-success mb-1">ONLINE</p>
+          return <p className="text-success mb-1">LIVE</p>
         }
         else{
           return <p className="text-danger mb-1">OFFLINE</p>
@@ -287,7 +288,13 @@ export class Dashboard extends Component {
                   <h4 className="card-title mb-1">Videokamera Innen</h4>
                   {this.getCameraStatus()}
                 </div>
-                <video src={this.getCameraStreamURL()} controls autoPlay muted style={{width: "100%"}}></video>
+                <ReactHlsPlayer
+                  src={this.getCameraStreamURL()}
+                  autoPlay={true}
+                  controls={false}
+                  muted={true}
+                  width="100%"
+                ></ReactHlsPlayer>
                 {/* <div className="row">
                   <div className="col-12">
                     <div className="preview-list">

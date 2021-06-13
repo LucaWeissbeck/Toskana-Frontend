@@ -167,6 +167,15 @@ export class Dashboard extends Component {
         return <p className="text-danger mb-1">OFFLINE</p>
       }
     }
+
+    formatDatePH = (datetime) => {
+      const time = datetime.slice(11, 16);
+      const month = datetime.slice(5, 7);
+      const day = datetime.slice(8, 10);
+      console.log(day)
+
+      return day + "/" + month + " at " + time
+    }
   
 
   render () {
@@ -233,7 +242,7 @@ export class Dashboard extends Component {
                 <div className="row">
                   <div className="col-9">
                     <div className="d-flex align-items-center align-self-start">
-                      <h3 className="mb-0">{this.state.phWeekData === null ? "N/A" : this.state.phWeekData[0].PH + "PH"}</h3>
+                      <h3 className="mb-0">{this.state.phWeekData === null ? "N/A" : this.state.phWeekData[this.state.phWeekData.length - 1].PH + "PH"}</h3>
                       <p className="text-success ml-2 mb-0 font-weight-medium">+3.5%</p>
                     </div>
                   </div>
@@ -243,7 +252,7 @@ export class Dashboard extends Component {
                     </div>
                   </div>
                 </div>
-                <h6 className="text-muted font-weight-normal">Pool</h6>
+                <h6 className="text-muted font-weight-normal">Pool ({this.state.phWeekData === null ? "N/A" : this.formatDatePH((this.state.phWeekData[this.state.phWeekData.length - 1].Time))})</h6>
               </div>
             </div>
           </div>
@@ -294,7 +303,7 @@ export class Dashboard extends Component {
                   controls={false}
                   muted={true}
                   width="100%"
-                ></ReactHlsPlayer>
+                />
                 {/* <div className="row">
                   <div className="col-12">
                     <div className="preview-list">

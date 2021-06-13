@@ -21,7 +21,7 @@ export class Dashboard extends Component {
     this.state = {
       weatherData: null,
       cameraData: null,
-      phWeekData: []
+      phWeekData: null
     }
   }
 
@@ -232,7 +232,7 @@ export class Dashboard extends Component {
                 <div className="row">
                   <div className="col-9">
                     <div className="d-flex align-items-center align-self-start">
-                      <h3 className="mb-0">7 PH</h3>
+                      <h3 className="mb-0">{this.state.phWeekData === null ? "N/A" : this.state.phWeekData[0].PH + "PH"}</h3>
                       <p className="text-success ml-2 mb-0 font-weight-medium">+3.5%</p>
                     </div>
                   </div>

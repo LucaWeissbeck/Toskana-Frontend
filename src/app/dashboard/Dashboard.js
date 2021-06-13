@@ -131,14 +131,14 @@ export class Dashboard extends Component {
       }
       else if(1180 > ppm > 425){
         return(
-        <div className="icon icon-box-danger ">
+          <div className="icon icon-box-danger ">
             <span className="mdi mdi-alert-circle-outline"></span>
           </div>
         )
       }
       else if(ppm > 1180){
         return (
-        <div className="icon icon-box-danger ">
+          <div className="icon icon-box-danger ">
             <span className="mdi mdi-alert-outline"></span>
           </div>
         )
@@ -175,6 +175,27 @@ export class Dashboard extends Component {
       console.log(day)
 
       return day + "/" + month + " at " + time
+    }
+
+    getPhStatus = (latestPH) =>{
+      switch(latestPH){
+        case "N/A":
+          return <div></div>;
+
+        case 8 > latestPH > 6:
+          return (
+              <div className="icon icon-box-success ">
+                <span className="mdi mdi-check"></span>
+              </div>
+          )
+
+        default:
+          return(
+              <div className="icon icon-box-danger ">
+                <span className="mdi mdi-alert-outline"></span>
+              </div>
+          )
+      }
     }
   
 
@@ -247,9 +268,7 @@ export class Dashboard extends Component {
                     </div>
                   </div>
                   <div className="col-3">
-                    <div className="icon icon-box-success ">
-                      <span className="mdi mdi-arrow-top-right icon-item"></span>
-                    </div>
+                    {this.getPhStatus((this.state.phWeekData === null ? "N/A" : this.state.phWeekData[this.state.phWeekData.length - 1].PH))}
                   </div>
                 </div>
                 <h6 className="text-muted font-weight-normal">Pool ({this.state.phWeekData === null ? "N/A" : this.formatDatePH((this.state.phWeekData[this.state.phWeekData.length - 1].Time))})</h6>

@@ -20,7 +20,8 @@ export class Dashboard extends Component {
     super(props);
     this.state = {
       weatherData: null,
-      cameraData: null
+      cameraData: null,
+      phWeekData: []
     }
   }
 
@@ -79,10 +80,17 @@ export class Dashboard extends Component {
     this.setState({
       cameraData: cameraData
     })
+
+    // Get PH Week Data
+    const phWeekData = await dashboardService.getPHWeek();
+    this.setState({
+      phWeekData: phWeekData
+    })
+
+
   }
 
   // METHODS
-
   getTemperatureTrend = (trend) => {
     console.log("trend", trend)
     switch(trend){
@@ -138,8 +146,9 @@ export class Dashboard extends Component {
 
     getCameraStreamURL = () => {
       let URL = "";
-      //this.state.cameraData === null ? URL = URL : URL =  this.state.cameraData.body.homes[0].cameras[0].vpn_url
+      this.state.cameraData === null ? URL = URL : URL =  this.state.cameraData.body.homes[0].cameras[0].vpn_url
       const videoURL = URL + "/live/index.m3u8" // if localhost change to: /live/index_local/index.m3u8
+      console.log("Video URL")
       console.log(videoURL);
       return videoURL
     }
@@ -162,7 +171,7 @@ export class Dashboard extends Component {
   render () {
     return (
       <div>
-        {console.log(this.state.cameraData)}
+        {console.log(this.state.phWeekData)}
         <div className="row">
           <div className="col-xl-3 col-sm-6 grid-margin stretch-card">
             <div className="card">

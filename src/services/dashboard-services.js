@@ -16,6 +16,16 @@ export const getVideoData = async(authCode) => {
         return response.data;
     }
     catch(error){
-        console.log("Error in getVideoData", error);
+        console.error("Error in getVideoData", error);
+    }
+}
+
+export const getPHWeek = async() => {
+    try{
+        const response = await axios.get("http://localhost:8080/ph/week");
+        return response.data;
+    }
+    catch(error){
+        console.error("Error in getPHWeek", error);
     }
 }

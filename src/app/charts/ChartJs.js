@@ -28,7 +28,7 @@ export class ChartJs extends Component {
           fill: false
         }]
     };
-
+ 
     options = {
       scales: {
         yAxes: [{

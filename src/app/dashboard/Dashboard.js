@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import Slider from "react-slick";
 import { TodoListComponent } from '../apps/TodoList';
+import { PhLineChartComponent } from "../components/phLineChartComponent";
 import  ReactHlsPlayer  from "react-hls-player";
 import { VectorMap } from "react-jvectormap"
 import * as netatmoAuth from "../../services/netatmo-authorization-services";
 import * as dashboardService from "../../services/dashboard-services";
-import phLineChartComponent from '../components/phLineChartComponent';
+
 
 const mapData = {
   "BZ": 75.00,
@@ -178,32 +179,32 @@ export class Dashboard extends Component {
       return day + "/" + month + " at " + time
     }
 
-    getPhStatus = (latestPH) =>{
-      switch(latestPH){
-        case "N/A":
-          return <div></div>;
+    getPhStatus = (latestPH) => {
+      if (latestPH === "N/A") {
+        return <div></div>;
 
-        case 8 > latestPH > 6:
-          return (
-              <div className="icon icon-box-success ">
-                <span className="mdi mdi-check"></span>
-              </div>
-          )
-
-        default:
-          return(
-              <div className="icon icon-box-danger ">
-                <span className="mdi mdi-alert-outline"></span>
-              </div>
-          )
+      }
+      else if (8 > latestPH && latestPH > 6) {
+        return (
+            <div className="icon icon-box-success ">
+              <span className="mdi mdi-check"></span>
+            </div>
+        )
+      } else {
+        return (
+            <div className="icon icon-box-danger ">
+              <span className="mdi mdi-alert-outline"></span>
+            </div>
+        )
       }
     }
+
+
   
 
   render () {
     return (
       <div>
-        {console.log(this.state.phWeekData)}
         <div className="row">
           <div className="col-xl-3 col-sm-6 grid-margin stretch-card">
             <div className="card">
@@ -288,7 +289,7 @@ export class Dashboard extends Component {
                     <h5 className="font-weight-normal text-whiite text-center mb-2 text-white">1200</h5>
                     <p className="text-small text-muted text-center mb-0">Total</p>
                   </div>
-                </div>  
+                </div>
                 <div className="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3">
                   <div className="text-md-center text-xl-left">
                     <h6 className="mb-1">Transfer to Paypal</h6>
@@ -482,8 +483,13 @@ export class Dashboard extends Component {
           <div className="col-12 grid-margin">
             <div className="card">
               <div className="card-body">
-                <h4 className="card-title">Order Status</h4>
-                  <phLineChartComponent phWeekData={this.state.phWeekData}/>
+                <h4 className="card-title">PH Value Pool</h4>
+                  <div>
+                    {
+                      this.state.phWeekData &&
+                      <PhLineChartComponent phWeekData={this.state.phWeekData}/>
+                    }
+                  </div>
               </div>
             </div>
           </div>

@@ -20,7 +20,7 @@ export default function AppRoutes(){
       <Suspense fallback={<Spinner/>}>
           <BrowserRouter>
               <Switch>
-                     <Route exact path="/login" component={Login} />
+                     <Route exact path="/" component={() => <Login ctx={ctx}/>} />
                      {ctx ? (<Route exact path="/dashboard" component={Dashboard} />) : null}
               </Switch>
           </BrowserRouter>

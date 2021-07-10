@@ -17,6 +17,12 @@ export class Login extends Component {
     this.getUser = this.getUser.bind(this);
   }
 
+  componentDidMount() {
+    if (this.props.ctx){
+      window.location.href = "/dashboard";
+    }
+  }
+
   setUsername(event){
     this.setState({
       username: event.target.value

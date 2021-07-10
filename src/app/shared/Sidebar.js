@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { Collapse, Dropdown } from 'react-bootstrap';
+import { Collapse } from 'react-bootstrap';
 import { Trans } from 'react-i18next';
 
 class Sidebar extends Component {

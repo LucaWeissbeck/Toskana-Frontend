@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import Slider from "react-slick";
 import { TodoListComponent } from '../apps/TodoList';
@@ -7,6 +7,8 @@ import  ReactHlsPlayer  from "react-hls-player";
 import { VectorMap } from "react-jvectormap"
 import * as netatmoAuth from "../../services/netatmo-authorization-services";
 import * as dashboardService from "../../services/dashboard-services";
+import axios from "axios";
+
 
 
 const mapData = {
@@ -21,6 +23,7 @@ const mapData = {
 export class Dashboard extends Component {
   constructor(props){
     super(props);
+    console.log("PROPS", props)
     this.state = {
       weatherData: null,
       cameraData: null,
@@ -69,8 +72,12 @@ export class Dashboard extends Component {
 
   async componentDidMount(){
     if(!localStorage.getItem("authToken")){
-      const authToken = await netatmoAuth.getAuthToken()
+      const netatmoAuthData = await netatmoAuth.getToken()
+      const authToken = netatmoAuthData.access_token
+      const refreshToken = netatmoAuthData.refresh_token
+      console.log(netatmoAuthData)
       localStorage.setItem("authToken", authToken);
+      localStorage.setItem("refreshToken", refreshToken)
     }
     // Get Weather Data
     const weatherData = await dashboardService.getCurrentWeather(localStorage.getItem("authToken"));
@@ -149,7 +156,9 @@ export class Dashboard extends Component {
 
     getCameraStreamURL = () => {
       let URL = "";
-      this.state.cameraData === null ? URL = URL : URL =  this.state.cameraData.body.homes[0].cameras[0].vpn_url
+      if (this.state.cameraData !== null){
+        URL =  this.state.cameraData.body.homes[0].cameras[0].vpn_url
+      }
       const videoURL = URL + "/live/index.m3u8" // if localhost change to: /live/index_local/index.m3u8
       console.log("Video URL")
       console.log(videoURL);
@@ -199,6 +208,15 @@ export class Dashboard extends Component {
       }
     }
 
+    logout = () =>{
+      axios.get("http://localhost:8080/authorization/logout", {
+        withCredentials: true
+      }).then((res) => {
+        if (res.status === 200){
+          window.location.href = "/";
+        }
+      })
+    }
 
   
 

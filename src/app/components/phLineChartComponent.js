@@ -45,8 +45,8 @@ export const PhLineChartComponent = (props) => {
                 const datetime = String(rawWeekData[i].Time)
                 const day = datetime.substring(8,10);
                 const month = datetime.substring(5, 7);
-                const hour = datetime.substring(11,13);
-                const minute = datetime.substring(14, 16);
+                //const hour = datetime.substring(11,13);
+                //const minute = datetime.substring(14, 16);
                 const time = day + "/" + month
                 tempLabels.push(time);
             }
@@ -61,7 +61,7 @@ export const PhLineChartComponent = (props) => {
             }
             setGraphData(data);
         }
-    }, [rawWeekData])
+    }, [rawWeekData, props.phWeekData])
 
     return(
         <div>

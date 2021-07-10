@@ -1,9 +1,9 @@
 import axios from "axios";
 
-export const getAuthToken = async() => {
+export const getToken = async() => {
     try{
-        const reponse = await axios.get("http://localhost:8080/authorise/auth");
-        return reponse.data.access_token;
+        const response = await axios.get("http://localhost:8080/authorise/auth");
+        return response.data;
     }
     catch(error){
         console.log("Error in getAuthToken", error);

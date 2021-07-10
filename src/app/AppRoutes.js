@@ -5,7 +5,6 @@ import Spinner from '../app/shared/Spinner';
 import { myContext } from "./context";
 
 const Dashboard = lazy(() => import('./dashboard/Dashboard'));
-const Homepage = lazy(() => import('./user-pages/Homepage'));
 
 
 const Login = lazy(() => import('./user-pages/Login'));

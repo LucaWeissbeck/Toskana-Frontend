@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import { Form, Button } from 'react-bootstrap';
 import axios from "axios";
 
+const backgroundImage = require("../../assets/images/background.png");
+const backgroundImage2 = require("../../assets/images/background2.png");
+
 export class Login extends Component {
   constructor(props) {
     super(props);
@@ -60,7 +63,7 @@ export class Login extends Component {
 
   render() {
     return (
-      <div>
+      <div style={{backgroundImage: `url(${backgroundImage2})`, backgroundPosition: "center", backgroundRepeat: "no-repeat", backgroundAttachment: "fixed"}}>
         <div className="d-flex align-items-center auth px-0">
           <div className="row w-100 mx-0">
             <div className="col-lg-4 mx-auto">
@@ -79,18 +82,6 @@ export class Login extends Component {
                   </Form.Group>
                   <div className="mt-3">
                     <Button className="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" onClick={this.login}>LOG IN</Button>
-                  </div>
-                  <div className="my-2 d-flex justify-content-between align-items-center">
-                    <div className="form-check">
-                      <label className="form-check-label text-muted">
-                        <input type="checkbox" className="form-check-input"/>
-                        <i className="input-helper"></i>
-                        Keep me signed in
-                      </label>
-                    </div>
-                  </div>
-                  <div className="text-center mt-4 font-weight-light">
-                    Don't have an account? <Link to="/user-pages/register" className="text-primary">Create</Link>
                   </div>
                 </Form>
               </div>

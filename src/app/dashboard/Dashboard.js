@@ -9,6 +9,10 @@ import * as netatmoAuth from "../../services/netatmo-authorization-services";
 import * as dashboardService from "../../services/dashboard-services";
 import axios from "axios";
 import { times } from 'chartist';
+import Navbar from '../shared/Navbar';
+import Sidebar from '../shared/Sidebar';
+import Footer from '../shared/Footer';
+import { myContext } from '../context';
 
 
 
@@ -24,7 +28,6 @@ const mapData = {
 export class Dashboard extends Component {
   constructor(props) {
     super(props);
-    console.log("PROPS", props)
     this.state = {
       weatherData: null,
       cameraData: null,
@@ -34,6 +37,7 @@ export class Dashboard extends Component {
       renderPoolData: false
     }
   }
+  static ctx = myContext;
 
   transactionHistoryData = {
     labels: ["Paypal", "Stripe", "Cash"],
@@ -75,6 +79,9 @@ export class Dashboard extends Component {
   }
 
   async componentDidMount() {
+    // Dashboard stuff
+    this.onRouteChanged();
+
     // Get Process ENV data to determine what to render
     const renderData = await dashboardService.getRenderData();
     const renderNetatmo = renderData.CLIENT_ID && renderData.CLIENT_SECRET && renderData.ACCOUNT_EMAIL && renderData.ACCOUNT_PASSWORD && renderData.INDOOR_MAC
@@ -107,7 +114,6 @@ export class Dashboard extends Component {
 
   // METHODS
   getTemperatureTrend = (trend) => {
-    console.log("trend", trend)
     switch (trend) {
       case "down":
         return (
@@ -165,8 +171,6 @@ export class Dashboard extends Component {
       URL = this.state.cameraData.body.homes[0].cameras[0].vpn_url
     }
     const videoURL = URL + "/live/index.m3u8" // if localhost change to: /live/index_local/index.m3u8
-    console.log("Video URL")
-    console.log(videoURL);
     return videoURL
   }
 
@@ -188,7 +192,6 @@ export class Dashboard extends Component {
     const time = datetime.slice(11, 16);
     const month = datetime.slice(5, 7);
     const day = datetime.slice(8, 10);
-    console.log(day)
 
     return day + "/" + month + " at " + time
   }
@@ -213,141 +216,178 @@ export class Dashboard extends Component {
     }
   }
 
+  // SideBar Stuff
+  componentDidUpdate(prevProps) {
+    if (this.props.location !== prevProps.location) {
+      this.onRouteChanged();
+    }
+
+  }
+
+  onRouteChanged() {
+    window.scrollTo(0, 0);
+    const fullPageLayoutRoutes = ['/user-pages/login-2', "/"];
+    for (let i = 0; i < fullPageLayoutRoutes.length; i++) {
+      if (this.props.location.pathname === fullPageLayoutRoutes[i]) {
+        this.setState({
+          isFullPageLayout: true
+        })
+        document.querySelector('.page-body-wrapper').classList.add('full-page-wrapper');
+        break;
+      } else {
+        this.setState({
+          isFullPageLayout: false
+        })
+        document.querySelector('.page-body-wrapper').classList.remove('full-page-wrapper');
+      }
+    }
+  }
+
   render() {
+    let navbarComponent = !this.state.isFullPageLayout ? <Navbar /> : '';
+    let sidebarComponent = !this.state.isFullPageLayout ? <Sidebar /> : '';
+    let footerComponent = !this.state.isFullPageLayout ? <Footer /> : '';
     return (
-      <div>
-        <div className="row">
-          {this.state.renderNetatmo &&
-            <>
-              <div className="col-xl-3 col-sm-6 grid-margin stretch-card">
-                <div className="card">
-                  <div className="card-body">
-                    <div className="row">
-                      <div className="col-9">
-                        <div className="d-flex align-items-center align-self-start">
-                          <h3 className="mb-0">{this?.state?.weatherData?.body?.devices[0]?.dashboard_data?.Temperature === undefined ? "N/A" : this.state.weatherData.body.devices[0].dashboard_data.Temperature + "°C"}</h3>
-                          <p className="text-primary ml-2 mb-0 font-weight-medium">{this?.state?.weatherData?.body?.devices[0]?.dashboard_data?.Humidity === undefined ? "N/A" : this.state.weatherData.body.devices[0].dashboard_data.Humidity + "%"}</p>
-                        </div>
-                      </div>
-                      <div className="col-3">
-                        {this.getTemperatureTrend(this?.state?.weatherData?.body?.devices[0]?.dashboard_data?.temp_trend === undefined ? "N/A" : this.state.weatherData.body.devices[0].dashboard_data.temp_trend)}
-                      </div>
-                    </div>
-                    <h6 className="text-muted font-weight-normal">Temperatur Haus</h6>
-                  </div>
-                </div>
-              </div>
 
-              <div className="col-xl-3 col-sm-6 grid-margin stretch-card">
-                <div className="card">
-                  <div className="card-body">
-                    <div className="row">
-                      <div className="col-9">
-                        <div className="d-flex align-items-center align-self-start">
-                          {console.log("weatherdata", this.state.weatherData)}
-                          <h3 className="mb-0">{this?.state?.weatherData?.body?.devices[0]?.modules[0]?.dashboard_data?.Temperature === undefined ? "N/A" : this.state.weatherData.body.devices[0].modules[0].dashboard_data.Temperature + "°C"}</h3>
-                          <p className="text-primary ml-2 mb-0 font-weight-medium">{this?.state?.weatherData?.body?.devices[0]?.modules[0]?.dashboard_data?.Humidity === undefined ? "N/A" : this.state.weatherData.body.devices[0].modules[0].dashboard_data.Humidity + "%"}</p>
+      <div className="container-scroller">
+        {console.log(this.ctx)}
+        {sidebarComponent}
+        <div className="container-fluid page-body-wrapper">
+          {navbarComponent}
+          <div className="main-panel">
+            <div className="content-wrapper">
+              <div>
+                <div className="row">
+                  {this.state.renderNetatmo &&
+                    <>
+                      <div className="col-xl-3 col-sm-6 grid-margin stretch-card">
+                        <div className="card">
+                          <div className="card-body">
+                            <div className="row">
+                              <div className="col-9">
+                                <div className="d-flex align-items-center align-self-start">
+                                  <h3 className="mb-0">{this?.state?.weatherData?.body?.devices[0]?.dashboard_data?.Temperature === undefined ? "N/A" : this.state.weatherData.body.devices[0].dashboard_data.Temperature + "°C"}</h3>
+                                  <p className="text-primary ml-2 mb-0 font-weight-medium">{this?.state?.weatherData?.body?.devices[0]?.dashboard_data?.Humidity === undefined ? "N/A" : this.state.weatherData.body.devices[0].dashboard_data.Humidity + "%"}</p>
+                                </div>
+                              </div>
+                              <div className="col-3">
+                                {this.getTemperatureTrend(this?.state?.weatherData?.body?.devices[0]?.dashboard_data?.temp_trend === undefined ? "N/A" : this.state.weatherData.body.devices[0].dashboard_data.temp_trend)}
+                              </div>
+                            </div>
+                            <h6 className="text-muted font-weight-normal">Temperatur Haus</h6>
+                          </div>
                         </div>
                       </div>
-                      <div className="col-3">
-                        {this.getTemperatureTrend(this?.state?.weatherData?.body?.devices[0]?.modules[0]?.dashboard_data?.temp_trend === undefined ? "N/A" : this.state.weatherData.body.devices[0].modules[0].dashboard_data.temp_trend)}
-                      </div>
-                    </div>
-                    <h6 className="text-muted font-weight-normal">Temperatur Draußen</h6>
-                  </div>
-                </div>
-              </div>
 
-              <div className="col-xl-3 col-sm-6 grid-margin stretch-card">
-                <div className="card">
-                  <div className="card-body">
-                    <div className="row">
-                      <div className="col-9">
-                        <div className="d-flex align-items-center align-self-start">
-                          <h3 className="mb-0">{this?.state?.weatherData?.body?.devices[0]?.dashboard_data?.CO2 === undefined ? "N/A" : this.state.weatherData.body.devices[0].dashboard_data.CO2 + " ppm"}</h3>
+                      <div className="col-xl-3 col-sm-6 grid-margin stretch-card">
+                        <div className="card">
+                          <div className="card-body">
+                            <div className="row">
+                              <div className="col-9">
+                                <div className="d-flex align-items-center align-self-start">
+                                  <h3 className="mb-0">{this?.state?.weatherData?.body?.devices[0]?.modules[0]?.dashboard_data?.Temperature === undefined ? "N/A" : this.state.weatherData.body.devices[0].modules[0].dashboard_data.Temperature + "°C"}</h3>
+                                  <p className="text-primary ml-2 mb-0 font-weight-medium">{this?.state?.weatherData?.body?.devices[0]?.modules[0]?.dashboard_data?.Humidity === undefined ? "N/A" : this.state.weatherData.body.devices[0].modules[0].dashboard_data.Humidity + "%"}</p>
+                                </div>
+                              </div>
+                              <div className="col-3">
+                                {this.getTemperatureTrend(this?.state?.weatherData?.body?.devices[0]?.modules[0]?.dashboard_data?.temp_trend === undefined ? "N/A" : this.state.weatherData.body.devices[0].modules[0].dashboard_data.temp_trend)}
+                              </div>
+                            </div>
+                            <h6 className="text-muted font-weight-normal">Temperatur Draußen</h6>
+                          </div>
                         </div>
                       </div>
-                      <div className="col-3">
-                        {this.getCo2Status(this?.state?.weatherData?.body?.devices[0]?.dashboard_data?.CO2 === undefined ? "N/A" : this.state.weatherData.body.devices[0].dashboard_data.CO2)}
-                      </div>
-                    </div>
-                    <h6 className="text-muted font-weight-normal">CO2 Innen</h6>
-                  </div>
-                </div>
-              </div>
-            </>
-          }
-          {this.state.renderPoolData &&
-            <>
-              <div className="col-xl-3 col-sm-6 grid-margin stretch-card">
-                <div className="card">
-                  <div className="card-body">
-                    <div className="row">
-                      <div className="col-9">
-                        <div className="d-flex align-items-center align-self-start">
-                          <h3 className="mb-0">{this?.state?.phWeekData?.PH === undefined ? "N/A" : this.state.phWeekData[this.state.phWeekData.length - 1].PH + "PH"}</h3>
-                          <p className="text-success ml-2 mb-0 font-weight-medium">+3.5%</p>
+
+                      <div className="col-xl-3 col-sm-6 grid-margin stretch-card">
+                        <div className="card">
+                          <div className="card-body">
+                            <div className="row">
+                              <div className="col-9">
+                                <div className="d-flex align-items-center align-self-start">
+                                  <h3 className="mb-0">{this?.state?.weatherData?.body?.devices[0]?.dashboard_data?.CO2 === undefined ? "N/A" : this.state.weatherData.body.devices[0].dashboard_data.CO2 + " ppm"}</h3>
+                                </div>
+                              </div>
+                              <div className="col-3">
+                                {this.getCo2Status(this?.state?.weatherData?.body?.devices[0]?.dashboard_data?.CO2 === undefined ? "N/A" : this.state.weatherData.body.devices[0].dashboard_data.CO2)}
+                              </div>
+                            </div>
+                            <h6 className="text-muted font-weight-normal">CO2 Innen</h6>
+                          </div>
                         </div>
                       </div>
-                      <div className="col-3">
-                        {this.getPhStatus((this?.state?.phWeekData?.PH === undefined ? "N/A" : this.state.phWeekData[this.state.phWeekData.length - 1].PH))}
+                    </>
+                  }
+                  {this.state.renderPoolData &&
+                    <>
+                      <div className="col-xl-3 col-sm-6 grid-margin stretch-card">
+                        <div className="card">
+                          <div className="card-body">
+                            <div className="row">
+                              <div className="col-9">
+                                <div className="d-flex align-items-center align-self-start">
+                                  <h3 className="mb-0">{this?.state?.phWeekData?.PH === undefined ? "N/A" : this.state.phWeekData[this.state.phWeekData.length - 1].PH + "PH"}</h3>
+                                  <p className="text-success ml-2 mb-0 font-weight-medium">+3.5%</p>
+                                </div>
+                              </div>
+                              <div className="col-3">
+                                {this.getPhStatus((this?.state?.phWeekData?.PH === undefined ? "N/A" : this.state.phWeekData[this.state.phWeekData.length - 1].PH))}
+                              </div>
+                            </div>
+                            <h6 className="text-muted font-weight-normal">Pool ({this?.state?.phWeekData?.PH === undefined ? "N/A" : this.formatDatePH((this.state.phWeekData[this.state.phWeekData.length - 1].Time))})</h6>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  }
+                </div>
+                <div className="row">
+                  <div className="col-md-4 grid-margin stretch-card">
+                    <div className="card">
+                      <div className="card-body">
+                        <h4 className="card-title">Ereignisse Videokamera Innen</h4>
+                        <div className="aligner-wrapper">
+                          <Doughnut data={this.transactionHistoryData} options={this.transactionHistoryOptions} />
+                          <div className="absolute center-content">
+                            <h5 className="font-weight-normal text-whiite text-center mb-2 text-white">1200</h5>
+                            <p className="text-small text-muted text-center mb-0">Total</p>
+                          </div>
+                        </div>
+                        <div className="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3">
+                          <div className="text-md-center text-xl-left">
+                            <h6 className="mb-1">Transfer to Paypal</h6>
+                            <p className="text-muted mb-0">07 Jan 2019, 09:12AM</p>
+                          </div>
+                          <div className="align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0">
+                            <h6 className="font-weight-bold mb-0">$236</h6>
+                          </div>
+                        </div>
+                        <div className="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3">
+                          <div className="text-md-center text-xl-left">
+                            <h6 className="mb-1">Tranfer to Stripe</h6>
+                            <p className="text-muted mb-0">07 Jan 2019, 09:12AM</p>
+                          </div>
+                          <div className="align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0">
+                            <h6 className="font-weight-bold mb-0">$593</h6>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <h6 className="text-muted font-weight-normal">Pool ({this?.state?.phWeekData?.PH === undefined ? "N/A" : this.formatDatePH((this.state.phWeekData[this.state.phWeekData.length - 1].Time))})</h6>
                   </div>
-                </div>
-              </div>
-            </>
-          }
-        </div>
-        <div className="row">
-          <div className="col-md-4 grid-margin stretch-card">
-            <div className="card">
-              <div className="card-body">
-                <h4 className="card-title">Ereignisse Videokamera Innen</h4>
-                <div className="aligner-wrapper">
-                  <Doughnut data={this.transactionHistoryData} options={this.transactionHistoryOptions} />
-                  <div className="absolute center-content">
-                    <h5 className="font-weight-normal text-whiite text-center mb-2 text-white">1200</h5>
-                    <p className="text-small text-muted text-center mb-0">Total</p>
-                  </div>
-                </div>
-                <div className="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3">
-                  <div className="text-md-center text-xl-left">
-                    <h6 className="mb-1">Transfer to Paypal</h6>
-                    <p className="text-muted mb-0">07 Jan 2019, 09:12AM</p>
-                  </div>
-                  <div className="align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0">
-                    <h6 className="font-weight-bold mb-0">$236</h6>
-                  </div>
-                </div>
-                <div className="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3">
-                  <div className="text-md-center text-xl-left">
-                    <h6 className="mb-1">Tranfer to Stripe</h6>
-                    <p className="text-muted mb-0">07 Jan 2019, 09:12AM</p>
-                  </div>
-                  <div className="align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0">
-                    <h6 className="font-weight-bold mb-0">$593</h6>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-8 grid-margin stretch-card">
-            <div className="card">
-              <div className="card-body">
-                <div className="d-flex flex-row justify-content-between">
-                  <h4 className="card-title mb-1">Videokamera Innen</h4>
-                  {this.getCameraStatus()}
-                </div>
-                <ReactHlsPlayer
-                  src={this.getCameraStreamURL()}
-                  autoPlay={true}
-                  controls={false}
-                  muted={true}
-                  width="100%"
-                />
-                {/* <div className="row">
+                  <div className="col-md-8 grid-margin stretch-card">
+                    <div className="card">
+                      <div className="card-body">
+                        <div className="d-flex flex-row justify-content-between">
+                          <h4 className="card-title mb-1">Videokamera Innen</h4>
+                          {this.getCameraStatus()}
+                        </div>
+                        <ReactHlsPlayer
+                          src={this.getCameraStreamURL()}
+                          autoPlay={true}
+                          controls={false}
+                          muted={true}
+                          width="100%"
+                        />
+                        {/* <div className="row">
                   <div className="col-12">
                     <div className="preview-list">
                       <div className="preview-item border-bottom">
@@ -438,30 +478,35 @@ export class Dashboard extends Component {
                     </div>
                   </div>
                 </div> */}
-              </div>
-            </div>
-          </div>
-        </div>
-        {this.state.renderPoolData &&
-          <>
-            <div className="row ">
-              <div className="col-12 grid-margin">
-                <div className="card">
-                  <div className="card-body">
-                    <h4 className="card-title">PH Value Pool</h4>
-                    <div>
-                      {
-                        this.state.phWeekData &&
-                        <PhLineChartComponent phWeekData={this.state.phWeekData} />
-                      }
+                      </div>
                     </div>
                   </div>
                 </div>
+                {this.state.renderPoolData &&
+                  <>
+                    <div className="row ">
+                      <div className="col-12 grid-margin">
+                        <div className="card">
+                          <div className="card-body">
+                            <h4 className="card-title">PH Value Pool</h4>
+                            <div>
+                              {
+                                this.state.phWeekData &&
+                                <PhLineChartComponent phWeekData={this.state.phWeekData} />
+                              }
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                }
               </div>
             </div>
-          </>
-        }
-      </div >
+            {footerComponent}
+          </div>
+        </div>
+      </div>
     );
   }
 }

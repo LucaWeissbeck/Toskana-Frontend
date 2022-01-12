@@ -1,9 +1,8 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Form, Button } from 'react-bootstrap';
 import axios from "axios";
 
-const backgroundImage = require("../../assets/images/background.png");
 const backgroundImage2 = require("../../assets/images/background2.png");
 
 export class Login extends Component {
@@ -21,24 +20,24 @@ export class Login extends Component {
   }
 
   componentDidMount() {
-    if (this.props.ctx){
+    if (this.props.ctx) {
       window.location.href = "/dashboard";
     }
   }
 
-  setUsername(event){
+  setUsername(event) {
     this.setState({
       username: event.target.value
     });
   }
 
-  setPassword(event){
+  setPassword(event) {
     this.setState({
       password: event.target.value
     });
   }
 
-  login(){
+  login() {
     const username = this.state.username;
     const password = this.state.password;
     axios.post("http://localhost:8080/authorize/login", {
@@ -47,13 +46,13 @@ export class Login extends Component {
     }, {
       withCredentials: true
     }).then(res => {
-      if (res.status === 200){
-        window.location.href  = "/dashboard";
+      if (res.status === 200) {
+        window.location.href = "/dashboard";
       }
     })
   }
 
-  getUser(){
+  getUser() {
     axios.get("http//localhost:8080/authorize/user", {
       withCredentials: true
     }).then(res => {
@@ -63,7 +62,8 @@ export class Login extends Component {
 
   render() {
     return (
-      <div style={{backgroundImage: `url(${backgroundImage2})`, backgroundPosition: "center", backgroundRepeat: "no-repeat", backgroundAttachment: "fixed"}}>
+      <div style={{ backgroundImage: `url(${backgroundImage2})`, backgroundPosition: "center", backgroundRepeat: "no-repeat", backgroundAttachment: "fixed" }}>
+        {console.log(this.ctx)}
         <div className="d-flex align-items-center auth px-0">
           <div className="row w-100 mx-0">
             <div className="col-lg-4 mx-auto">
@@ -87,7 +87,7 @@ export class Login extends Component {
               </div>
             </div>
           </div>
-        </div>  
+        </div>
       </div>
     )
   }

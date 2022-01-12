@@ -26,5 +26,15 @@ There are a wide range of temperature sensors available on the market. It is imp
 - Netatmo Smart Indoor Camera -> <a href="https://www.netatmo.com/en-eu/security/cam-indoor">Learn more<a>
 - Raspberry Pi 3 B+ - 3.5" (8,9 cm) Touch Display Set -> <a href="https://www.reichelt.com/ch/en/raspberry-pi-3-3-5-8-9-cm-touchscreen-display-set-rpi-set-3-5-3b--p239418.html?&trstct=pos_1&nbc=1">Learn more</a>
 - Elegoo Uno R3 Microcontroller (Arduino replica) -> <a href="https://www.amazon.de/-/en/gp/product/B01EWOE0UU/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1">Learn more</a>
+  
+### Roadmap
+- [x] Create Basic Dashboard
+- [x] Create API able to communicate with SmartHome Products
+- [x] Make integrated SmartHome products adaptble to users preference
+- [x] Purchase PH sensor & Arduino
+- [x] Program Python scripts for Raspberry Pi to send receive PH data from Arduino and send it to DB twice a day
+- [x] Establish Login System with MongoDB and Passport.js
+- [ ] Prevent User from accessing empty dashboard when not logged in (Bug)
+- [ ] Create preview screenshots for GitHub
 
 

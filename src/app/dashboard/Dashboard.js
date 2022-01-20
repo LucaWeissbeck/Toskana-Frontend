@@ -34,7 +34,8 @@ export class Dashboard extends Component {
       phWeekData: null,
       renderNetatmo: false,
       renderSecurity: false,
-      renderPoolData: false
+      renderPoolData: false,
+      videoEventData: null
     }
   }
   static ctx = myContext;
@@ -103,6 +104,21 @@ export class Dashboard extends Component {
       cameraData: cameraData
     })
 
+    // Get Camera Event Data
+    const cameraEventData = await dashboardService.getVideoEventData();
+    const desiredEvents = new Set(["person", "animal", "movement"])
+    cameraEventData.events = cameraEventData.events.filter((event) => {
+      if (desiredEvents.has(event.type)){
+        return true
+      }
+      else{
+        return false
+      }
+    })
+    this.setState({
+      videoEventData: cameraEventData.events
+    })
+
     // Get PH Week Data
     const phWeekData = await dashboardService.getPHWeek();
     this.setState({
@@ -136,6 +152,21 @@ export class Dashboard extends Component {
           </div>
         )
     }
+  }
+
+  convertUnixTimestamp = (unixTimestamp) => {
+    const date = new Date(unixTimestamp * 1000)
+    const hours = date.getHours()
+    const minutes = "0" + date.getMinutes()
+    const day = date.getDate()
+    const month = date.getMonth() + 1
+
+    console.log(hours)
+    console.log(minutes)
+
+    const returnString = String(day) + "." + String(month) + " - " + hours + ":" + minutes.substr(-2)
+
+    return returnString
   }
 
   getCo2Status = (ppm) => {
@@ -250,7 +281,7 @@ export class Dashboard extends Component {
     return (
 
       <div className="container-scroller">
-        {console.log(this.ctx)}
+        {console.log(this.state.videoEventData)}
         {sidebarComponent}
         <div className="container-fluid page-body-wrapper">
           {navbarComponent}
@@ -341,34 +372,24 @@ export class Dashboard extends Component {
                   }
                 </div>
                 <div className="row">
-                  <div className="col-md-4 grid-margin stretch-card">
+                  <div className="col-md-4 scroll grid-margin stretch-card">
                     <div className="card">
-                      <div className="card-body">
-                        <h4 className="card-title">Ereignisse Videokamera Innen</h4>
-                        <div className="aligner-wrapper">
-                          <Doughnut data={this.transactionHistoryData} options={this.transactionHistoryOptions} />
-                          <div className="absolute center-content">
-                            <h5 className="font-weight-normal text-whiite text-center mb-2 text-white">1200</h5>
-                            <p className="text-small text-muted text-center mb-0">Total</p>
-                          </div>
-                        </div>
-                        <div className="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3">
-                          <div className="text-md-center text-xl-left">
-                            <h6 className="mb-1">Transfer to Paypal</h6>
-                            <p className="text-muted mb-0">07 Jan 2019, 09:12AM</p>
-                          </div>
-                          <div className="align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0">
-                            <h6 className="font-weight-bold mb-0">$236</h6>
-                          </div>
-                        </div>
-                        <div className="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3">
-                          <div className="text-md-center text-xl-left">
-                            <h6 className="mb-1">Tranfer to Stripe</h6>
-                            <p className="text-muted mb-0">07 Jan 2019, 09:12AM</p>
-                          </div>
-                          <div className="align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0">
-                            <h6 className="font-weight-bold mb-0">$593</h6>
-                          </div>
+                      <div className="scroll">
+                        <div className="card-body">
+                          <h4 className="card-title">Ereignisse Videokamera Innen</h4>
+                            {this.state?.videoEventData?.slice(0,30).map((event) => {
+                              return(
+                              <div className="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3" style={{}} onClick={() => window.open(event.snapshot.url, "_blank")}>
+                                <div className="text-md-center text-xl-left">
+                                    <h6 className="mb-1">{event.message.replace(/<\/?[^>]+(>|$)/g, "")}</h6>
+                                    <p className="text-muted mb-0">{this.convertUnixTimestamp(event.time)}</p>
+                                </div>
+                                <div className="align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0">
+                                  <h6 className="font-weight-bold mb-0">{event.type.charAt(0).toUpperCase() + event.type.slice(1)}</h6>
+                                </div>
+                              </div>)
+                            })
+                          }
                         </div>
                       </div>
                     </div>

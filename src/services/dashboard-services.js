@@ -39,3 +39,13 @@ export const getRenderData = async () => {
         console.error("Error in getRenderData", error)
     }
 }
+
+export const getVideoEventData = async() => {
+    try{
+        const videoEventData = await axios.get("http://localhost:8080/camera/events");
+        return videoEventData.data.body.home
+    }
+    catch(error){
+        console.error("Error in getVideoEventData", error)
+    }
+}

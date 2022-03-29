@@ -1,0 +1,106 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: toskana-backend
+        image: toskana-backend
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: DB_PASSWORD
+        - name: CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: CLIENT_SECRET
+        - name: ACCOUNT_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: ACCOUNT_EMAIL
+        - name: ACCOUNT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: ACCOUNT_PASSWORD
+        - name: INDOOR_MAC
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: INDOOR_MAC
+        - name: MONGO_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: MONGO_PASSWORD
+        - name: HOME_ID
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: HOME_ID
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: Mysql_HOST
+        - name: DB_USER
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: Mysql_USER
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: Mysql_NAME
+        - name: MONGO_USER
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: Mongo_USER
+        - name: SECURITY_NETATMO
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: SECURITY_NETATMO
+        - name: POOL_DATA
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: POOL_DATA
+        - name: CLIENT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: CLIENT_ID
+      
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-config
+data:
+   Mysql_HOST: mysql-mariadb-25-104.zap-hosting.com
+   Mysql_USER: zap42324-1
+   Mysql_NAME: zap42324-1
+   Mongo_USER: toskana
+   SECURITY_NETATMO: noUse
+   POOL_DATA: noUse
+   CLIENT_ID: 61cf1ad0d53b42563170dfae

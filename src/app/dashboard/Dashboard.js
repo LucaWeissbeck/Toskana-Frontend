@@ -377,19 +377,21 @@ export class Dashboard extends Component {
                       <div className="scroll">
                         <div className="card-body">
                           <h4 className="card-title">Ereignisse Videokamera Innen</h4>
-                            {this.state?.videoEventData?.slice(0,30).map((event) => {
-                              return(
-                              <div className="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3" style={{}} onClick={() => window.open(event.snapshot.url, "_blank")}>
-                                <div className="text-md-center text-xl-left">
-                                    <h6 className="mb-1">{event.message.replace(/<\/?[^>]+(>|$)/g, "")}</h6>
-                                    <p className="text-muted mb-0">{this.convertUnixTimestamp(event.time)}</p>
-                                </div>
-                                <div className="align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0">
-                                  <h6 className="font-weight-bold mb-0">{event.type.charAt(0).toUpperCase() + event.type.slice(1)}</h6>
-                                </div>
-                              </div>)
-                            })
-                          }
+                            <div style={{maxHeight: "100%"}}>
+                              {this.state?.videoEventData?.slice(0,30).map((event) => {
+                                return(
+                                <div className="bg-gray-dark d-flex d-md-block d-xl-flex flex-row py-3 px-4 px-md-3 px-xl-4 rounded mt-3" style={{}} onClick={() => window.open(event.snapshot.url, "_blank")}>
+                                  <div className="text-md-center text-xl-left">
+                                      <h6 className="mb-1">{event.message.replace(/<\/?[^>]+(>|$)/g, "")}</h6>
+                                      <p className="text-muted mb-0">{this.convertUnixTimestamp(event.time)}</p>
+                                  </div>
+                                  <div className="align-self-center flex-grow text-right text-md-center text-xl-right py-md-2 py-xl-0">
+                                    <h6 className="font-weight-bold mb-0">{event.type.charAt(0).toUpperCase() + event.type.slice(1)}</h6>
+                                  </div>
+                                </div>)
+                              })
+                              }
+                          </div>
                         </div>
                       </div>
                     </div>

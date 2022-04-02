@@ -281,8 +281,6 @@ export class Dashboard extends Component {
     return (
 
       <div className="container-scroller">
-        {console.log("PROCESS ENV")}
-        {console.log(process.env.BACKEND_URL)}
         {sidebarComponent}
         <div className="container-fluid page-body-wrapper">
           {navbarComponent}

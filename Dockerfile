@@ -16,5 +16,6 @@ RUN npm install react-scripts@3.4.1 -g --force --silent
 # add app
 COPY . ./
 
+EXPOSE 3000:3000
 # start app
 CMD ["npm", "start"]

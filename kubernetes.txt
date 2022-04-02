@@ -1,0 +1,8 @@
+Import commands for setup
+
+Open ports from inside minikube docker container to outside:
+kubectl port-forward service/frontend-service 3000:3000  
+kubectl port-forward service/backend-service 8080:8080 
+
+Access Minikube docker environment
+eval $(minikube docker-env) 

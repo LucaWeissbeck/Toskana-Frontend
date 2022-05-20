@@ -63,8 +63,6 @@ export class Login extends Component {
   render() {
     return (
       <div style={{ backgroundImage: `url(${backgroundImage2})`, backgroundPosition: "center", backgroundRepeat: "no-repeat", backgroundAttachment: "fixed" }}>
-        {console.log("PROCESS ENV")}
-        {console.log(process.env.BACKEND_URL)}
         <div className="d-flex align-items-center auth px-0">
           <div className="row w-100 mx-0">
             <div className="col-lg-4 mx-auto">

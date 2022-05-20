@@ -1,0 +1,12 @@
+.video-activity {
+    margin: 5px;
+    @media (max-width: 767px) {
+        /* Your mobile styles here */
+        max-height: 250px;
+    }
+
+    @media (min-width:1025px) {
+        /* Your desktop styles here */
+        max-height: 500px
+    }
+}

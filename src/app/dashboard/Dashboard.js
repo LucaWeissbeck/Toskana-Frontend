@@ -1,18 +1,11 @@
 import React, { Component } from 'react';
-import { Doughnut } from 'react-chartjs-2';
-import Slider from "react-slick";
-import { TodoListComponent } from '../apps/TodoList';
 import { PhLineChartComponent } from "../components/phLineChartComponent";
 import ReactHlsPlayer from "react-hls-player";
-import { VectorMap } from "react-jvectormap"
-import * as netatmoAuth from "../../services/netatmo-authorization-services";
 import * as dashboardService from "../../services/dashboard-services";
-import axios from "axios";
-import { times } from 'chartist';
 import Navbar from '../shared/Navbar';
 import Sidebar from '../shared/Sidebar';
 import Footer from '../shared/Footer';
-import { myContext } from '../context';
+import { withAuthenticationRequired } from '@auth0/auth0-react';
 
 
 
@@ -38,7 +31,6 @@ export class Dashboard extends Component {
       videoEventData: null
     }
   }
-  static ctx = myContext;
 
   transactionHistoryData = {
     labels: ["Paypal", "Stripe", "Cash"],
@@ -533,4 +525,4 @@ export class Dashboard extends Component {
   }
 }
 
-export default Dashboard;
+export default withAuthenticationRequired(Dashboard);

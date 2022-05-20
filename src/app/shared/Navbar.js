@@ -3,8 +3,11 @@ import { Dropdown } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { Trans } from 'react-i18next';
 import axios from "axios";
+import { useAuth0 } from "@auth0/auth0-react";
+import LogoutButton from '../authentication/LogoutButton';
 
 class Navbar extends Component {
+  
   toggleOffcanvas() {
     document.querySelector('.sidebar-offcanvas').classList.toggle('active');
   }
@@ -12,17 +15,6 @@ class Navbar extends Component {
     document.querySelector('.right-sidebar').classList.toggle('open');
   }
 
-  logout(){
-    axios.get("http://localhost:8080/authorize/logout", {
-      withCredentials: true
-    }).then((res) => {
-      if (res.status === 200){
-        window.location.href = "/";
-      }
-    }).catch(err => {
-      console.error(err);
-    })
-  }
 
   render () {
     return (
@@ -67,7 +59,7 @@ class Navbar extends Component {
                     </div>
                   </div>
                   <div className="preview-item-content">
-                    <p className="preview-subject mb-1"><Trans>Log Out</Trans></p>
+                    <LogoutButton />
                   </div>
                 </Dropdown.Item>
                 <Dropdown.Divider />

@@ -4,6 +4,7 @@
   "homepage": "/dashboard",
   "private": true,
   "dependencies": {
+    "@auth0/auth0-react": "^1.10.1",
     "@lourenci/react-kanban": "^0.13.0",
     "@mdi/font": "^4.2.95",
     "@tinymce/tinymce-react": "^3.3.2",

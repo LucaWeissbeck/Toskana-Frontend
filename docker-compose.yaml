@@ -6,16 +6,19 @@ services:
       - /dev:/dev
     deploy:
       replicas: 1
+      update_config:
+        order: start-first
       restart_policy:
         condition: on-failure
-      constraints:
-        "node.hostname==raspberrypi"
+      placement:
+        constraints:
+          - "node.hostname==raspberrypi"
   frontend:
     image: 193.196.54.131:4999/toskana-frontend
     ports:
       - "80:3000"
     depends_on:
-      - [backend]
+      - backend
     secrets:
       - CLIENT_ID
       - CLIENT_SECRET
@@ -29,10 +32,13 @@ services:
       - HOME_ID
     deploy:
       replicas: 2
+      update_config:
+        order: start-first
       restart_policy:
         condition: on-failure
-      constraints:
-        "node.hostname!=raspberrypi"
+      placement:
+        constraints:
+          - "node.hostname!=raspberrypi"
    
   backend:
     image: 193.196.54.131:4999/toskana-backend
@@ -40,10 +46,13 @@ services:
       - "8080:8080"
     deploy:
       replicas: 2
+      update_config:
+        order: start-first
       restart_policy:
         condition: on-failure
-      constraints:
-        "node.hostname!=raspberrypi"
+      placement:
+        constraints:
+          - "node.hostname!=raspberrypi"
 
 secrets:
   CLIENT_ID:

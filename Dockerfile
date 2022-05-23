@@ -1,21 +1,20 @@
-# pull official base image
-FROM node:14-alpine
-
-# set working directory
+FROM node:14-alpine as builder
 WORKDIR /app
-
-# add `/app/node_modules/.bin` to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
-
-# install app dependencies
 COPY package.json ./
 COPY package-lock.json ./
-RUN npm install --force
-RUN npm install react-scripts@3.4.1 -g --force --silent
+COPY . /app/
 
-# add app
-COPY . ./
+RUN npm install --silent
+RUN npm install react-scripts@4.0.3 -g --silent
+RUN npm run build
+# production environment
 
-EXPOSE 3000:3000
-# start app
-CMD ["npm", "start"]
+
+
+FROM nginx:1.21.1-alpine
+COPY --from=builder /app/build /usr/share/nginx/html
+RUN rm /etc/nginx/conf.d/default.conf
+COPY nginx/nginx.conf /etc/nginx/conf.d
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

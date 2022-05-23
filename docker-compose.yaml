@@ -1,0 +1,68 @@
+version: "3.8"
+services:
+  pi-service:
+    image: 193.196.54.131:4999/pi-service
+    volumes:
+      - /dev:/dev
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      constraints:
+        "node.hostname==raspberrypi"
+  frontend:
+    image: 193.196.54.131:4999/toskana-frontend
+    ports:
+      - "80:3000"
+    depends_on:
+      - [backend]
+    secrets:
+      - CLIENT_ID
+      - CLIENT_SECRET
+      - ACCOUNT_EMAIL
+      - ACCOUNT_PASSWORD
+      - INDOOR_MAC
+      - MONGO_USER
+      - MONGO_PASSWORD
+      - SECURITY_NETATMO
+      - POOL_DATA
+      - HOME_ID
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+      constraints:
+        "node.hostname!=raspberrypi"
+   
+  backend:
+    image: 193.196.54.131:4999/toskana-backend
+    ports:
+      - "8080:8080"
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+      constraints:
+        "node.hostname!=raspberrypi"
+
+secrets:
+  CLIENT_ID:
+    external: true
+  CLIENT_SECRET:
+    external: true
+  ACCOUNT_EMAIL:
+    external: true
+  ACCOUNT_PASSWORD:
+    external: true
+  INDOOR_MAC:
+    external: true
+  MONGO_USER:
+    external: true
+  MONGO_PASSWORD:
+    external: true
+  SECURITY_NETATMO:
+    external: true
+  POOL_DATA:
+    external: true
+  HOME_ID:
+    external: true

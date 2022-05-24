@@ -16,20 +16,15 @@ services:
   frontend:
     image: 193.196.54.131:4999/toskana-frontend
     ports:
-      - "80:3000"
+      - target: 443
+      - published: 443
+      - protocol: tcp
+      - mode: ingress
+  
+    volumes:
+      - /home/centos/ssl_certificates/:/etc/nginx/certs/
     depends_on:
       - backend
-    secrets:
-      - CLIENT_ID
-      - CLIENT_SECRET
-      - ACCOUNT_EMAIL
-      - ACCOUNT_PASSWORD
-      - INDOOR_MAC
-      - MONGO_USER
-      - MONGO_PASSWORD
-      - SECURITY_NETATMO
-      - POOL_DATA
-      - HOME_ID
     deploy:
       replicas: 2
       update_config:
@@ -42,8 +37,17 @@ services:
    
   backend:
     image: 193.196.54.131:4999/toskana-backend
-    ports:
-      - "8080:8080"
+    secrets:
+      - CLIENT_ID
+      - CLIENT_SECRET
+      - ACCOUNT_EMAIL
+      - ACCOUNT_PASSWORD
+      - INDOOR_MAC
+      - MONGO_USER
+      - MONGO_PASSWORD
+      - SECURITY_NETATMO
+      - POOL_DATA
+      - HOME_ID
     deploy:
       replicas: 2
       update_config:

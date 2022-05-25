@@ -1,5 +1,6 @@
 FROM node:14-alpine as builder
 WORKDIR /app
+RUN apk add g++ make py3-pip
 COPY package.json ./
 COPY package-lock.json ./
 COPY . /app/

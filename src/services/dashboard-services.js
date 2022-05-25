@@ -1,8 +1,10 @@
 import axios from "axios";
+import BASE_URL from "./config"
+
 
 export const getCurrentWeather = async (authCode) => {
     try {
-        const response = await axios.get("http://localhost:8080/weather/weatherdata", { headers: { "authorization": authCode } });
+        const response = await axios.get(BASE_URL + "/weather/weatherdata", { headers: { "authorization": authCode } });
         return response.data;
     }
     catch (error) {
@@ -12,7 +14,7 @@ export const getCurrentWeather = async (authCode) => {
 
 export const getVideoData = async (authCode) => {
     try {
-        const response = await axios.get("http://localhost:8080/camera/homedata", { headers: { authorization: authCode } });
+        const response = await axios.get(BASE_URL + "/camera/homedata", { headers: { authorization: authCode } });
         return response.data;
     }
     catch (error) {
@@ -22,7 +24,7 @@ export const getVideoData = async (authCode) => {
 
 export const getPHWeek = async () => {
     try {
-        const response = await axios.get("http://localhost:8080/ph/week");
+        const response = await axios.get(BASE_URL + "/ph/week");
         return response.data;
     }
     catch (error) {
@@ -32,7 +34,7 @@ export const getPHWeek = async () => {
 
 export const getRenderData = async () => {
     try {
-        const renderData = await axios.get("http://localhost:8080/information/services");
+        const renderData = await axios.get(BASE_URL + "/information/services");
         return renderData.data
     }
     catch (error) {
@@ -42,7 +44,7 @@ export const getRenderData = async () => {
 
 export const getVideoEventData = async() => {
     try{
-        const videoEventData = await axios.get("http://localhost:8080/camera/events");
+        const videoEventData = await axios.get(BASE_URL + "/camera/events");
         return videoEventData.data.body.home
     }
     catch(error){

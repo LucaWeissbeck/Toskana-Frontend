@@ -4,7 +4,7 @@ import BASE_URL from "./config"
 
 export const getCurrentWeather = async (authCode) => {
     try {
-        const response = await axios.get(BASE_URL + "/weather/weatherdata", { headers: { "authorization": authCode } });
+        const response = await axios.get(BASE_URL + "/weather/weatherdata");
         return response.data;
     }
     catch (error) {

@@ -39,9 +39,10 @@ There are a wide range of temperature sensors available on the market. It is imp
 - [ ] Be able to send invitation E-Mails using Auth0 (currently user needs to be configured manually)
 - [ ] Change storage location of PH-Value logs to MongoDB 
 - [ ] Improve robustness of python scripts on Raspberry Pi
-- [ ] Configure outdoor camera 
+- [x] Configure outdoor camera 
 - [ ] Manage PH chart if no data is provided
-- [ ] Configure LTE modem for Raspberry Pi
+- [x] Configure LTE modem for Raspberry Pi
+- [ ] Make PH sensor send data wirelessly
   
   
 

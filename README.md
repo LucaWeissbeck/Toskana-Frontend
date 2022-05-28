@@ -1,8 +1,14 @@
 # IoT Home Dashboard - Holiday Home
+### Sample Images Dashboard
+<img width="1792" alt="Screenshot 2022-05-28 at 18 52 54" src="https://user-images.githubusercontent.com/62757957/170835064-ffcfe195-b81a-4929-acc6-b7bc83c10907.png">
 
+
+<img width="1792" alt="Screenshot 2022-05-28 at 18 52 41" src="https://user-images.githubusercontent.com/62757957/170835066-3198371c-749c-4614-99d6-56c8553ab113.png">
+
+
+### Architecture
+Architecture diagram in progress
 ### Use Case
-
-
 #### PH Value 
 This project emerged from the necessity to have the option to **monitor the holiday home** in Tuscany, Italy remotely. Usually there is little supervision of a
 holiday home during periods of absence which is why it is a good idea to have monitor capabilites in place. Especially for longer periods of time. One of the

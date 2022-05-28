@@ -41,7 +41,7 @@ There are a wide range of temperature sensors available on the market. It is imp
 - [x] Program Python scripts for Raspberry Pi to send receive PH data from Arduino and send it to DB twice a day
 - [x] Establish Login System with MongoDB and Passport.js
 - [x] Prevent User from accessing empty dashboard when not logged in (Bug)
-- [ ] Create preview screenshots for GitHub
+- [x] Create preview screenshots for GitHub
 - [ ] Be able to send invitation E-Mails using Auth0 (currently user needs to be configured manually)
 - [ ] Change storage location of PH-Value logs to MongoDB 
 - [ ] Improve robustness of python scripts on Raspberry Pi

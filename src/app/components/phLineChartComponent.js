@@ -7,13 +7,20 @@ const options = {
     scales: {
         yAxes: [{
             ticks: {
-                beginAtZero: true
+                beginAtZero: true,
+                max: 14,
+                stepsize: 1,
+                fontSize: 25,
+                fontColor: "white"
             },
             gridLines: {
-                color: "rgba(204, 204, 204,0.1)"
+                color: "rgba(204, 204, 204,0.5)"
             }
         }],
         xAxes: [{
+            ticks: {
+                fontColor: "white"
+            },
             gridLines: {
                 color: "rgba(204, 204, 204,0.1)"
             }
@@ -41,8 +48,8 @@ export const PhLineChartComponent = (props) => {
         let tempLabels = [];
         if (rawWeekData.length > 0){
             for (let i = 0; i < rawWeekData.length; i++){
-                tempData.push(rawWeekData[i].PH);
-                const datetime = String(rawWeekData[i].Time)
+                tempData.push(rawWeekData[i].ph_value);
+                const datetime = String(rawWeekData[i].date)
                 const day = datetime.substring(8,10);
                 const month = datetime.substring(5, 7);
                 //const hour = datetime.substring(11,13);

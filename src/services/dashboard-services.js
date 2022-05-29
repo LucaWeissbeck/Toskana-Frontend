@@ -14,7 +14,7 @@ export const getCurrentWeather = async (authCode) => {
 
 export const getVideoData = async (authCode) => {
     try {
-        const response = await axios.get(BASE_URL + "/camera/homedata", { headers: { authorization: authCode } });
+        const response = await axios.get(BASE_URL + "/camera/homedata");
         return response.data;
     }
     catch (error) {
@@ -25,6 +25,7 @@ export const getVideoData = async (authCode) => {
 export const getPHWeek = async () => {
     try {
         const response = await axios.get(BASE_URL + "/ph/week");
+        console.log(response.data)
         return response.data;
     }
     catch (error) {

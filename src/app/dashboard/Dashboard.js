@@ -25,9 +25,9 @@ export class Dashboard extends Component {
       weatherData: null,
       cameraData: null,
       phWeekData: null,
-      renderNetatmo: false,
-      renderSecurity: false,
-      renderPoolData: false,
+      renderNetatmo: true,
+      renderSecurity: true,
+      renderPoolData: true,
       videoEventData: null
     }
   }
@@ -76,14 +76,13 @@ export class Dashboard extends Component {
     this.onRouteChanged();
 
     // Get Process ENV data to determine what to render
-    const renderData = await dashboardService.getRenderData();
-    const renderNetatmo = renderData.CLIENT_ID && renderData.CLIENT_SECRET && renderData.ACCOUNT_EMAIL && renderData.ACCOUNT_PASSWORD && renderData.INDOOR_MAC
-    const renderSecurity = renderData.SECURITY_NETATMO
-    this.setState({
-      renderNetatmo: renderNetatmo,
-      renderSecurity: renderSecurity,
-      renderPoolData: renderData.POOL_DATA
-    });
+    //const renderNetatmo = renderData.CLIENT_ID && renderData.CLIENT_SECRET && renderData.ACCOUNT_EMAIL && renderData.ACCOUNT_PASSWORD && renderData.INDOOR_MAC
+    //const renderSecurity = renderData.SECURITY_NETATMO
+    //this.setState({
+    //  renderNetatmo: renderNetatmo,
+    //  renderSecurity: renderSecurity,
+    //  renderPoolData: renderData.POOL_DATA
+    //});
     // Get Weather Data
     const weatherData = await dashboardService.getCurrentWeather();
     this.setState({
@@ -114,7 +113,8 @@ export class Dashboard extends Component {
     // Get PH Week Data
     const phWeekData = await dashboardService.getPHWeek();
     this.setState({
-      phWeekData: phWeekData
+      phWeekData: phWeekData,
+      renderPoolData: true
     })
 
 
@@ -288,6 +288,7 @@ export class Dashboard extends Component {
                             <div className="row">
                               <div className="col-9">
                                 <div className="d-flex align-items-center align-self-start">
+                                  {console.log(this.state.weatherData)}
                                   <h3 className="mb-0">{this?.state?.weatherData?.body?.devices[0]?.dashboard_data?.Temperature === undefined ? "N/A" : this.state.weatherData.body.devices[0].dashboard_data.Temperature + "°C"}</h3>
                                   <p className="text-primary ml-2 mb-0 font-weight-medium">{this?.state?.weatherData?.body?.devices[0]?.dashboard_data?.Humidity === undefined ? "N/A" : this.state.weatherData.body.devices[0].dashboard_data.Humidity + "%"}</p>
                                 </div>
@@ -347,15 +348,15 @@ export class Dashboard extends Component {
                             <div className="row">
                               <div className="col-9">
                                 <div className="d-flex align-items-center align-self-start">
-                                  <h3 className="mb-0">{this?.state?.phWeekData?.PH === undefined ? "N/A" : this.state.phWeekData[this.state.phWeekData.length - 1].PH + "PH"}</h3>
+                                  <h3 className="mb-0">{this?.state?.phWeekData === null ? "N/A" : this.state.phWeekData[this.state.phWeekData.length - 1].ph_value + "PH"}</h3>
                                   <p className="text-success ml-2 mb-0 font-weight-medium">+3.5%</p>
                                 </div>
                               </div>
                               <div className="col-3">
-                                {this.getPhStatus((this?.state?.phWeekData?.PH === undefined ? "N/A" : this.state.phWeekData[this.state.phWeekData.length - 1].PH))}
+                                {this.getPhStatus((this?.state?.phWeekData === null ? "N/A" : this.state.phWeekData[this.state.phWeekData.length - 1].ph_value))}
                               </div>
                             </div>
-                            <h6 className="text-muted font-weight-normal">Pool ({this?.state?.phWeekData?.PH === undefined ? "N/A" : this.formatDatePH((this.state.phWeekData[this.state.phWeekData.length - 1].Time))})</h6>
+                            <h6 className="text-muted font-weight-normal">Pool ({this?.state?.phWeekData === null ? "N/A" : this.formatDatePH((this.state.phWeekData[this.state.phWeekData.length - 1].date))})</h6>
                           </div>
                         </div>
                       </div>
